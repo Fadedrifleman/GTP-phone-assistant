@@ -19,7 +19,7 @@ const incoming = async (req, res) => {
         if (req.cookies.id) {
             res.cookie("id", req.cookies.id);
         } else {
-            const id = await helper.initializeChat(INITIAL_MESSAGE);
+            const id = await util.initializeChat(INITIAL_MESSAGE);
             res.cookie("id", id);
         }
 
@@ -29,7 +29,7 @@ const incoming = async (req, res) => {
             speechTimeout: "auto",
             speechModel: "experimental_conversations",
             enhanced: true,
-            action: "/respond",
+            action: "/api/v1/respond",
         });
 
         // Set the response content type and send the voice response
@@ -49,18 +49,19 @@ const response = async (req, res) => {
         const id = req.cookies.id;
 
         // Post the voice input to a URL and get the response
-        const { data } = await axios.post(
-            url,
-            { prompt: voiceInput },
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            }
-        );
+        // const { data } = await axios.post(
+        //     url,
+        //     { prompt: voiceInput },
+        //     {
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //         },
+        //     }
+        // );
 
-        // Extract the output from the response data
-        const output = data[0].Answer;
+        // // Extract the output from the response data
+        // const output = data[0].Answer;
+        const output = "AI output";
 
         // Set cookies for message and id
         res.cookie("msg", voiceInput);
@@ -69,7 +70,7 @@ const response = async (req, res) => {
         // Create a new voice response with the output and redirect to incoming-call
         const voiceResponse = new twiml.VoiceResponse();
         voiceResponse.say(output);
-        voiceResponse.redirect({ method: "POST" }, "/incoming-call");
+        voiceResponse.redirect({ method: "POST" }, "/api/v1/incoming-call");
 
         // Set the response content type and send the voice response
         res.set("Content-Type", "application/xml");
