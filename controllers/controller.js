@@ -49,19 +49,18 @@ const response = async (req, res) => {
         const id = req.cookies.id;
 
         // Post the voice input to a URL and get the response
-        // const { data } = await axios.post(
-        //     url,
-        //     { prompt: voiceInput },
-        //     {
-        //         headers: {
-        //             "Content-Type": "application/json",
-        //         },
-        //     }
-        // );
+        const { data } = await axios.post(
+            url,
+            { prompt: voiceInput },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
 
-        // // Extract the output from the response data
-        // const output = data[0].Answer;
-        const output = "AI output";
+        // Extract the output from the response data
+        const output = data[0].Answer;
 
         // Set cookies for message and id
         res.cookie("msg", voiceInput);
