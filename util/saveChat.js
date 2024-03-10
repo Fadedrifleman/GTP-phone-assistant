@@ -32,4 +32,16 @@ const initializeChat = async (msg) => {
         throw error;
     }
 };
-module.exports = { saveChat, initializeChat };
+
+const getChatHistory = async (id) => {
+    try {
+        const data = await model.Chat.findById(id).select("-chat._id");
+        let chat = data.chat;
+        return chat;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
+
+module.exports = { saveChat, initializeChat, getChatHistory };
