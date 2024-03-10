@@ -2,7 +2,7 @@ const twiml = require("twilio").twiml;
 const axios = require("axios");
 const util = require("../util/saveChat");
 
-const url = "http://localhost:8000/api/run-agent/prompt_agent";
+const url = "http://localhost:8000/api/run-agent/prompt_agent/";
 const INITIAL_MESSAGE = "Hello, how may I help you";
 
 // This function handles incoming requests
@@ -50,7 +50,7 @@ const response = async (req, res) => {
 
         // Post the voice input to a URL and get the response
         const { data } = await axios.post(
-            url,
+            `${url}${id}`,
             { prompt: voiceInput },
             {
                 headers: {
@@ -88,4 +88,9 @@ const response = async (req, res) => {
     }
 };
 
-module.exports = { incoming, response };
+const getChat = async (req, res) => {
+    const data = await util.getChatHistory("65eb19c6251de63d99e1310a");
+    res.status(200).json({ data });
+};
+
+module.exports = { incoming, response, getChat };
