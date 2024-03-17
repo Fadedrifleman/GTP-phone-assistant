@@ -8,7 +8,7 @@ require("dotenv").config();
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(morgan("dev"));
+// app.use(morgan("dev"));
 app.use(cookieParser());
 
 app.use("/api/v1/", baseRouter);
