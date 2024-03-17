@@ -73,7 +73,7 @@ const response = async (req, res) => {
                     "Content-Type": "application/json",
                 },
             });
-            ConversationListInstance.log(data);
+            console.log(data);
             voiceResponse.say("Have a great gay");
             res.set("Content-Type", "application/xml");
             res.send(voiceResponse.toString());
