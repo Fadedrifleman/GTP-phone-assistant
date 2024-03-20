@@ -2,9 +2,9 @@ const twiml = require("twilio").twiml;
 const axios = require("axios");
 const util = require("../util/saveChat");
 
-const baseUrl = "https://8046-110-235-219-232.ngrok-free.app";
+const baseUrl = "https://cef1-110-235-219-228.ngrok-free.app";
 // const baseUrl = "https:/localhost:8000";
-const url = `${baseUrl}/api/run-agent/prompt_agent/`;
+const url = `${baseUrl}/api/run-agent/indic_prompt_agent/`;
 const genDetailUrl = `${baseUrl}/api/run-agent/get_personal_info/`;
 const INITIAL_MESSAGE = "Hello, how may I help you";
 
@@ -33,6 +33,7 @@ const incoming = async (req, res) => {
             speechTimeout: "auto",
             speechModel: "experimental_conversations",
             enhanced: true,
+            language: "hi-IN",
             action: "/api/v1/respond",
         });
 
@@ -51,10 +52,13 @@ const response = async (req, res) => {
         // Extract the voice input from the request body
         const voiceInput = req.body.SpeechResult;
         const id = req.cookies.id;
+        res.cookie("id", id);
 
         function checkString(inputStr) {
             var lowerCaseStr = inputStr.toLowerCase();
-            return lowerCaseStr.includes("bye");
+            return (
+                lowerCaseStr.includes("bye") || lowerCaseStr.includes("ओक बाई")
+            );
         }
 
         const endCheck = checkString(voiceInput);
@@ -68,13 +72,8 @@ const response = async (req, res) => {
         // Create a new voice response with the output and redirect to incoming-call
         const voiceResponse = new twiml.VoiceResponse();
         if (endCheck) {
-            const { data } = await axios.get(`${genDetailUrl}${id}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            console.log(data);
             voiceResponse.say("Have a great gay");
+            voiceResponse.redirect({ method: "GET" }, "/api/v1/appointment");
             res.set("Content-Type", "application/xml");
             res.send(voiceResponse.toString());
             voiceResponse.hangup();
@@ -90,12 +89,12 @@ const response = async (req, res) => {
                 }
             );
 
-            // Extract the output from the response data
+            // // Extract the output from the response data
             const output = data[0].Answer;
+            // const output = voiceInput;
 
             // Set cookies for message and id
-            res.cookie("msg", voiceInput);
-            res.cookie("id", id);
+            res.cookie("msg", output);
 
             voiceResponse.say(output);
             voiceResponse.redirect({ method: "POST" }, "/api/v1/incoming-call");
@@ -118,4 +117,20 @@ const getChat = async (req, res) => {
     res.status(200).json({ data });
 };
 
-module.exports = { incoming, response, getChat };
+const getAppointmentData = async (req, res) => {
+    try {
+        const id = req.cookies.id;
+        const { data } = await axios.get(`${genDetailUrl}${id}`, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        console.log(data);
+        res.status(200).json({ success: trie });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+module.exports = { incoming, response, getChat, getAppointmentData };
