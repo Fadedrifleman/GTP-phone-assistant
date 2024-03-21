@@ -3,7 +3,7 @@ const axios = require("axios");
 const util = require("../util/saveChat");
 
 const baseUrl = "https://cef1-110-235-219-228.ngrok-free.app";
-// const baseUrl = "https:/localhost:8000";
+// const baseUrl = "http://localhost:8000";
 const url = `${baseUrl}/api/run-agent/indic_prompt_agent/`;
 const genDetailUrl = `${baseUrl}/api/run-agent/get_personal_info/`;
 const INITIAL_MESSAGE = "Hello, how may I help you";
