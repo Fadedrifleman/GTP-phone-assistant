@@ -15,7 +15,10 @@ const incoming = async (req, res) => {
 
         // If there are no cookies or message in the cookies, say the initial message
         if (!req.cookies || !req.cookies.msg) {
-            voiceResponse.say(INITIAL_MESSAGE);
+            voiceResponse.say(
+                { language: "hi-IN", voice: "hi-IN-Standard-D" },
+                INITIAL_MESSAGE
+            );
             console.log(`assistant: ${INITIAL_MESSAGE}`);
         }
 
@@ -72,7 +75,10 @@ const response = async (req, res) => {
         // Create a new voice response with the output and redirect to incoming-call
         const voiceResponse = new twiml.VoiceResponse();
         if (endCheck) {
-            voiceResponse.say("Have a great gay");
+            voiceResponse.say(
+                { language: "hi-IN", voice: "hi-IN-Standard-D" },
+                "Have a great gay"
+            );
             voiceResponse.redirect({ method: "GET" }, "/api/v1/appointment");
             res.set("Content-Type", "application/xml");
             res.send(voiceResponse.toString());
@@ -96,7 +102,10 @@ const response = async (req, res) => {
             // Set cookies for message and id
             res.cookie("msg", output);
 
-            voiceResponse.say(output);
+            voiceResponse.say(
+                { language: "hi-IN", voice: "hi-IN-Standard-D" },
+                output
+            );
             voiceResponse.redirect({ method: "POST" }, "/api/v1/incoming-call");
             // Set the response content type and send the voice response
             res.set("Content-Type", "application/xml");
